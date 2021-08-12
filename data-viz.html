@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter plot Graph</title>
+    <script src="//unpkg.com/d3"></script>
+    <style type="text/css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        svg {
+            border: 1px solid #bbb;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Scatter Plot</h2>
+
+    <!-- add a div for the svg graph -->
+    <div id="dataviz"></div>
+</body>
+<script>
+    var margin = { top: 10, left: 60, bottom: 30, right: 30 }
+    width = 660 - margin.left - margin.right;
+    height = 500 - margin.top - margin.bottom;
+
+    var svg = d3.select("#dataviz").append("svg")
+        .attr('width', width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .style("background-color", '#bbb')
+
+        // to group your svgs
+        .append("g")
+        .attr("transform", "translate(" + margin.left + " ", +" " + margin.top + ")")
+
+    // load and use the data
+    // download your data file from remote server or local server
+    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv",
+        function (data) {
+            console.log(data);
+
+            // add x-axis
+            var x = d3.scaleLinear()
+                .domain([0, 4000])
+                .range([0, width])
+            svg.append("g")
+                .attr('transform', "translate(0," + height + " )")
+                .call(d3.axisBottom(x))
+
+                .append('text')
+                .attr("class", 'label')
+                .attr("x", width)
+                .attr("y", -6)
+                .attr("fill", "#000")
+                .style("text-anchor", "end")
+                .text("Sales Price in USD")
+
+            // add y-axis
+            var y = d3.scaleLinear()
+                .domain([0, 500000])
+                .range([height, 0])
+            svg.append('g')
+                .call(d3.axisLeft(y))
+                .append('text')
+                .attr("class", 'label')
+                .attr("y", height)
+                .attr("transform", "rotate(90)")
+                .attr("y", -6)
+                .attr("fill", "#000")
+                .style("text-anchor", "end")
+                .text("Sales Price in USD")
+            // add the dots to the graph
+
+            svg.append("g")
+                .selectAll("dot")
+                .data([data])
+                // console.log(data + "Na him")
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.GrLivArea) })
+                .attr("cy", function (d) { return y(d.SalePrice) })
+                .attr("r", 3)
+                .style("fill", "blue")
+                .style("opacity", "0.5")
+
+
+        })
+
+
+
+
+</script>
+
+</html>
